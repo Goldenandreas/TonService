@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Мой ЮрБот</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f0f8ff;
+        }
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🛡️ Юридические услуги</h1>
+    
+    <div id="categories">
+        <!-- Здесь появятся кнопки -->
+    </div>
+
+    <script>
+        // ВКЛЮЧАЕМ ТЕЛЕГРАМ
+        Telegram.WebApp.ready();
+        
+        // НАШИ УСЛУГИ (просто список)
+        const services = {
+            "Бизнес": ["Регистрация ООО", "Договор поставки"],
+            "Недвижимость": ["Купля-продажа", "Дарственная"],
+            "Семья": ["Развод", "Алименты"]
+        };
+        
+        // СОЗДАЕМ КНОПКИ
+        function createButtons() {
+            const container = document.getElementById('categories');
+            
+            for(const category in services) {
+                const btn = document.createElement('button');
+                btn.className = 'btn';
+                btn.textContent = category;
+                
+                btn.onclick = function() {
+                    showServices(category);
+                };
+                
+                container.appendChild(btn);
+            }
+        }
+        
+        // ПОКАЗЫВАЕМ УСЛУГИ КАТЕГОРИИ
+        function showServices(category) {
+            const container = document.getElementById('categories');
+            container.innerHTML = `<h2>${category}</h2>`;
+            
+            services[category].forEach(service => {
+                const btn = document.createElement('button');
+                btn.className = 'btn';
+                btn.textContent = service;
+                
+                btn.onclick = function() {
+                    Telegram.WebApp.showPopup({
+                        title: "Выбор услуги",
+                        message: `Вы выбрали: ${service}`,
+                        buttons: [{ type: "ok", text: "Продолжить" }]
+                    });
+                };
+                
+                container.appendChild(btn);
+            });
+            
+            // КНОПКА НАЗАД
+            const backBtn = document.createElement('button');
+            backBtn.className = 'btn';
+            backBtn.textContent = "← Назад";
+            backBtn.onclick = createButtons;
+            container.appendChild(backBtn);
+        }
+        
+        // ЗАПУСКАЕМ ПРИ ЗАГРУЗКЕ
+        window.onload = createButtons;
+    </script>
+</body>
+</html>
